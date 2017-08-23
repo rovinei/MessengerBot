@@ -116,7 +116,7 @@ var sendTextMessage = function (recipientId, messageText) {
 var callSendAPI = function (messageData) {
    request({
       uri: 'https://graph.facebook.com/v2.6/me/messages',
-      qs: { access_token: config.FB_PAGE_ACCESS_TOKEN },
+      qs: { access_token: config.page_access_token },
       method: 'POST',
       json: messageData
 
@@ -207,5 +207,10 @@ var receivedResponseBack = function (event) {
 
 
 module.exports = {
-
+   incomingMessageReceived : incomingMessageReceived,
+   receivedMessage: receivedMessage,
+   sendTextMessage: sendTextMessage,
+   callSendAPI: callSendAPI,
+   sendGenericMessage: sendGenericMessage,
+   receivedResponseBack: receivedResponseBack
 }
