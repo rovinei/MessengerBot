@@ -17,35 +17,38 @@ var request = require('request');
    *************************************************************
 
 *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   */
-var incomingMessageReceived = function(request, response, next){
+var incomingMessageReceived = function(req, res, next){
    var data = req.body;
-
+   console.log("message received : "+data);
    // Make sure this is a page subscription
    if (data.object === 'page') {
 
-   // Iterate over each entry - there may be multiple if batched
-   data.entry.forEach(function(entry) {
-      var pageID = entry.id;
-      var timeOfEvent = entry.time;
+      // Iterate over each entry - there may be multiple if batched
+      data.entry.forEach(function(entry) {
+         var pageID = entry.id;
+         var timeOfEvent = entry.time;
 
-      // Iterate over each messaging event
-      entry.messaging.forEach(function(event) {
-         if (event.message) {
-            receivedMessage(event);
-         } else if(event.postback){
-            receivedResponseBack(event);
-         } else {
-            console.log("Webhook received unknown event: ", event);
-         }
+         // Iterate over each messaging event
+         entry.messaging.forEach(function(event) {
+            if (event.message) {
+               receivedMessage(event);
+            } else if(event.postback){
+               receivedResponseBack(event);
+            } else {
+               console.log("Webhook received unknown event: ", event);
+            }
+         });
       });
-   });
 
       // Assume all went well.
       // You must send back a 200, within 20 seconds, to let us know
       // you've successfully received the callback. Otherwise, the request
       // will time out and we will keep trying to resend.
+
       res.sendStatus(200);
    }
+
+   console.log("page not subscribe");
 }
 
 
@@ -204,7 +207,10 @@ var receivedResponseBack = function (event) {
 }
 
 
-
+var checkServer = function(req, res, next){
+   console.log("check server loading");
+   res.render('index', { title: 'Express', page_token: config.page_access_token, verify_token: config.fb_verify_token });
+}
 
 module.exports = {
    incomingMessageReceived : incomingMessageReceived,
@@ -212,5 +218,6 @@ module.exports = {
    sendTextMessage: sendTextMessage,
    callSendAPI: callSendAPI,
    sendGenericMessage: sendGenericMessage,
-   receivedResponseBack: receivedResponseBack
+   receivedResponseBack: receivedResponseBack,
+   checkServer: checkServer
 }

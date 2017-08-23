@@ -19,4 +19,6 @@ router.get('/verify', function(req, res, next){
 
 router.post('/verify', fbMessageController.incomingMessageReceived);
 
+router.get('/check', fbMessageController.checkServer);
+
 module.exports = router;
