@@ -1,0 +1,47 @@
+@import 'plugin/bourbon/_bourbon.scss';
+@import url('https://fonts.googleapis.com/css?family=Abel|Economica');
+*,
+*:after,
+*::before{
+    @include box-sizing(border-box);
+}
+
+html{
+    background: none;
+    background-image: none;
+}
+body{
+    position: relative;
+    background: #fafafa;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: $font-opensans-cond;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    -webkit-text-size-adjust:100%;
+    letter-spacing: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+}
+
+.container{
+    position: relative;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.section{
+    position: relative;
+    width: 100%;
+    padding: 60px 0 30px 0;
+}
+
+.section-bg__white{
+    padding: 20px;
+    border: 2px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+

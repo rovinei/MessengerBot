@@ -7,6 +7,14 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/term-of-services', function(req, res, next) {
+  res.render('tos', { title: 'Veirdo Bot Agent | Term of Service page' });
+});
+
+router.get('/privacy-policy', function(req, res, next) {
+  res.render('privacy', { title: 'Veirdo Bot Agent | Privacy and Policy page' });
+});
+
 router.get('/verify', function(req, res, next){
     if(req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === config.fb_verify_token){
         console.log("Validating webhook");
@@ -19,6 +27,6 @@ router.get('/verify', function(req, res, next){
 
 router.post('/verify', fbMessageController.incomingMessageReceived);
 
-router.get('/check', fbMessageController.checkServer);
+
 
 module.exports = router;
