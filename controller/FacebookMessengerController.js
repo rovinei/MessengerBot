@@ -1,6 +1,10 @@
 var config = require('../config');
 var request = require('request');
-
+var fs = require('fs');
+var Weather = require('./WeatherController');
+var _ = require('lodash');
+var _array = require('lodash/array');
+var _object = require('lodash/fp/object');
 
 
 
@@ -79,26 +83,67 @@ var receivedMessage = function (event) {
 
    var messageId = message.mid;
 
-   var messageText = message.text;
+   var messageText = _.toLower(value);
+   var messageWords = _.words(messageText);
    var messageAttachments = message.attachments;
 
-   if (messageText) {
+   if (messageText ! == "") {
 
       // If we receive a text message, check to see if it matches a keyword
-      // and send back the example. Otherwise, just echo the text we received.
-      switch (messageText) {
-         case 'generic':
-            sendGenericMessage(senderID);
-            break;
-
-         default:
-            sendTextMessage(senderID, messageText);
+      // and response appropiately back
+      if(_.includes(messageWords, "weather")){
+         weatherResponse(senderID, messageWords);
       }
+
    } else if (messageAttachments) {
+      console.log("MESSAGE ATTACHMENT : "+messageAttachments);
       sendTextMessage(senderID, "Message with attachment received");
    }
 }
 
+
+var weatherResponse = function (recipientId, messageWords){
+
+   // Identified data type of message
+   if(typeof messageWords == "object" && messageWords instanceof Array){
+      if(messageWords.length > 1){
+         var location = messageWords.pop();
+         var weather = new Weather(location);
+         weather.current(function(err, data){
+            var result = JSON.parse(data);
+            var message = presentationText(result);
+            sendTextMessage(recipientId, message);
+         });
+      }else{
+         sendTextMessage(recipientId, "Which city you want to know the weather?");
+      }
+
+   }
+
+   function presentationText(data){
+      var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      var today = new Date();
+      var message = `
+         Weather Of ${data.name || ''} today ${today.getDate()} ${today.getMonth()}, ${today.getFullYear()}
+
+         Temperature : ${data.main.temp || ''}
+         Min Temperature : ${data.main.temp_min || ''}
+         Max Temperature : ${data.main.temp_max || ''}
+         Condition : ${data.weather.description || ''}
+      `;
+      return message;
+   }
+
+   // Handle weather json file from disk
+   function handleFile(err, data){
+      if(err){
+         console.log(err);
+      }
+
+      obj = JSON.parse(data);
+      console.log("JSON FILE: "+ obj.main.temp);
+   }
+}
 
 var sendTextMessage = function (recipientId, messageText) {
    var messageData = {
