@@ -87,7 +87,7 @@ var receivedMessage = function (event) {
    var messageWords = _.words(messageText);
    var messageAttachments = message.attachments;
 
-   if (messageText ! == "") {
+   if (messageText !== "") {
 
       // If we receive a text message, check to see if it matches a keyword
       // and response appropiately back
